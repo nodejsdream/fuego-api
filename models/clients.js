@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataType) => {
-  const Tasks = sequelize.define("Tasks", {
+  const Clients = sequelize.define("Clients", {
     id: {
       type: DataType.INTEGER,
       primaryKey: true,
@@ -20,9 +20,9 @@ module.exports = (sequelize, DataType) => {
   }, {
     classMethods: {
       associate: (models) => {
-        Tasks.belongsTo(models.Users);
+        Clients.belongsTo(models.Users);
       }
     }
   });
-  return Tasks;
+  return Clients;
 };

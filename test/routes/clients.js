@@ -1,8 +1,8 @@
 import jwt from "jwt-simple";
 
-describe("Routes: Tasks", () => {
+describe("Routes: Clients", () => {
   const Users = app.db.models.Users;
-  const Tasks = app.db.models.Tasks;
+  const Clients = app.db.models.Clients;
   const jwtSecret = app.libs.config.jwtSecret;
   let token;
   let fakeTask;
@@ -15,9 +15,9 @@ describe("Routes: Tasks", () => {
         password: "12345"
       }))
       .then(user => {
-        Tasks
+        Clients
           .destroy({where: {}})
-          .then(() => Tasks.bulkCreate([{
+          .then(() => Clients.bulkCreate([{
             id: 1,
             title: "Work",
             user_id: user.id
@@ -26,17 +26,17 @@ describe("Routes: Tasks", () => {
             title: "Study",
             user_id: user.id
           }]))
-          .then(tasks => {
-            fakeTask = tasks[0];
+          .then(clients => {
+            fakeTask = clients[0];
             token = jwt.encode({id: user.id}, jwtSecret);
             done();
           });
       });
   });
-  describe("GET /tasks", () => {
+  describe("GET /clients", () => {
     describe("status 200", () => {
-      it("returns a list of tasks", done => {
-        request.get("/tasks")
+      it("returns a list of clients", done => {
+        request.get("/clients")
           .set("Authorization", `JWT ${token}`)
           .expect(200)
           .end((err, res) => {
@@ -48,10 +48,10 @@ describe("Routes: Tasks", () => {
       });
     });
   });
-  describe("POST /tasks", () => {
+  describe("POST /clients", () => {
     describe("status 200", () => {
-      it("creates a new task", done => {
-        request.post("/tasks")
+      it("creates a new client", done => {
+        request.post("/clients")
           .set("Authorization", `JWT ${token}`)
           .send({title: "Run"})
           .expect(200)
@@ -63,10 +63,10 @@ describe("Routes: Tasks", () => {
       });
     });
   });
-  describe("GET /tasks/:id", () => {
+  describe("GET /clients/:id", () => {
     describe("status 200", () => {
-      it("returns one task", done => {
-        request.get(`/tasks/${fakeTask.id}`)
+      it("returns one client", done => {
+        request.get(`/clients/${fakeTask.id}`)
           .set("Authorization", `JWT ${token}`)
           .expect(200)
           .end((err, res) => {
@@ -76,18 +76,18 @@ describe("Routes: Tasks", () => {
       });
     });
     describe("status 404", () => {
-      it("throws error when task not exist", done => {
-        request.get("/tasks/0")
+      it("throws error when client not exist", done => {
+        request.get("/clients/0")
           .set("Authorization", `JWT ${token}`)
           .expect(404)
           .end((err, res) => done(err));
       });
     });
   });
-  describe("PUT /tasks/:id", () => {
+  describe("PUT /clients/:id", () => {
     describe("status 204", () => {
-      it("updates a task", done => {
-        request.put(`/tasks/${fakeTask.id}`)
+      it("updates a client", done => {
+        request.put(`/clients/${fakeTask.id}`)
           .set("Authorization", `JWT ${token}`)
           .send({
             title: "Travel",
@@ -98,10 +98,10 @@ describe("Routes: Tasks", () => {
       });
     });
   });
-  describe("DELETE /tasks/:id", () => {
+  describe("DELETE /clients/:id", () => {
     describe("status 204", () => {
-      it("removes a task", done => {
-        request.delete(`/tasks/${fakeTask.id}`)
+      it("removes a client", done => {
+        request.delete(`/clients/${fakeTask.id}`)
           .set("Authorization", `JWT ${token}`)
           .expect(204)
           .end((err, res) => done(err));

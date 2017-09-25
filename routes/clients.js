@@ -1,36 +1,36 @@
 module.exports = app => {
-  const Tasks = app.db.models.Tasks;
+  const Clients = app.db.models.Clients;
 
-  app.route("/tasks")
+  app.route("/clients")
     .all(app.auth.authenticate())
     /**
-     * @api {get} /tasks List the user's tasks
-     * @apiGroup Tasks
+     * @api {get} /clients List of the clients
+     * @apiGroup Clients
      * @apiHeader {String} Authorization Token of authenticated user
      * @apiHeaderExample {json} Header
      *    {"Authorization": "JWT xyz.abc.123.hgf"}
-     * @apiSuccess {Object[]} tasks Task's list
-     * @apiSuccess {Number} tasks.id Task id
-     * @apiSuccess {String} tasks.title Task title
-     * @apiSuccess {Boolean} tasks.done Task is done?
-     * @apiSuccess {Date} tasks.updated_at Update's date
-     * @apiSuccess {Date} tasks.created_at Register's date
-     * @apiSuccess {Number} tasks.user_id User id
+     * @apiSuccess {Object[]} clients Client's list
+     * @apiSuccess {Number} clients.id client id
+     * @apiSuccess {String} clients.title client title
+     * @apiSuccess {Boolean} clients.done client is active?
+     * @apiSuccess {Date} clients.updated_at Update's date
+     * @apiSuccess {Date} clients.created_at Register's date
+     * @apiSuccess {Number} clients.user_id User id
      * @apiSuccessExample {json} Success
      *    HTTP/1.1 200 OK
      *    [{
      *      "id": 1,
-     *      "title": "Study",
+     *      "title": "Some",
      *      "done": false,
-     *      "updated_at": "2016-02-10T15:46:51.778Z",
-     *      "created_at": "2016-02-10T15:46:51.778Z",
+     *      "updated_at": "2017-09-20T15:46:51.778Z",
+     *      "created_at": "2017-09-20T15:46:51.778Z",
      *      "user_id": 1
      *    }]
      * @apiErrorExample {json} List error
      *    HTTP/1.1 412 Precondition Failed
      */
     .get((req, res) => {
-      Tasks.findAll({
+      Clients.findAll({
         where: { user_id: req.user.id }
       })
       .then(result => res.json(result))
@@ -39,8 +39,8 @@ module.exports = app => {
       });
     })
     /**
-     * @api {post} /tasks Register a new task
-     * @apiGroup Tasks
+     * @api {post} /clients Register a new client
+     * @apiGroup Clients
      * @apiHeader {String} Authorization Token of authenticated user
      * @apiHeaderExample {json} Header
      *    {"Authorization": "JWT xyz.abc.123.hgf"}
@@ -68,18 +68,18 @@ module.exports = app => {
      */
     .post((req, res) => {
       req.body.user_id = req.user.id;
-      Tasks.create(req.body)
+      Clients.create(req.body)
         .then(result => res.json(result))
         .catch(error => {
           res.status(412).json({msg: error.message});
         });
     });
 
-  app.route("/tasks/:id")
+  app.route("/clients/:id")
     .all(app.auth.authenticate())
     /**
-     * @api {get} /tasks/:id Get a task
-     * @apiGroup Tasks
+     * @api {get} /clients/:id Get a client
+     * @apiGroup Clients
      * @apiHeader {String} Authorization Token of authenticated user
      * @apiHeaderExample {json} Header
      *    {"Authorization": "JWT xyz.abc.123.hgf"}
@@ -106,7 +106,7 @@ module.exports = app => {
      *    HTTP/1.1 412 Precondition Failed
      */
     .get((req, res) => {
-      Tasks.findOne({ where: {
+      Clients.findOne({ where: {
         id: req.params.id,
         user_id: req.user.id
       }})
@@ -122,8 +122,8 @@ module.exports = app => {
       });
     })
     /**
-     * @api {put} /tasks/:id Update a task
-     * @apiGroup Tasks
+     * @api {put} /clients/:id Update a client
+     * @apiGroup Clients
      * @apiHeader {String} Authorization Token of authenticated user
      * @apiHeaderExample {json} Header
      *    {"Authorization": "JWT xyz.abc.123.hgf"}
@@ -141,7 +141,7 @@ module.exports = app => {
      *    HTTP/1.1 412 Precondition Failed
      */
     .put((req, res) => {
-      Tasks.update(req.body, { where: {
+      Clients.update(req.body, { where: {
         id: req.params.id,
         user_id: req.user.id
       }})
@@ -151,8 +151,8 @@ module.exports = app => {
       });
     })
     /**
-     * @api {delete} /tasks/:id Remove a task
-     * @apiGroup Tasks
+     * @api {delete} /clients/:id Remove a client
+     * @apiGroup Clients
      * @apiHeader {String} Authorization Token of authenticated user
      * @apiHeaderExample {json} Header
      *    {"Authorization": "JWT xyz.abc.123.hgf"}
@@ -163,7 +163,7 @@ module.exports = app => {
      *    HTTP/1.1 412 Precondition Failed
      */
     .delete((req, res) => {
-      Tasks.destroy({ where: {
+      Clients.destroy({ where: {
         id: req.params.id,
         user_id: req.user.id
       }})

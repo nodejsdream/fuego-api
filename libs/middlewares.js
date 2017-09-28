@@ -7,7 +7,7 @@ import helmet from "helmet";
 import logger from "./logger.js";
 
 module.exports = app => {
-  app.set("port", 3000);
+  app.set("port", 433);
   app.set("json spaces", 4);
   app.use(morgan("common", {
     stream: {
@@ -18,7 +18,7 @@ module.exports = app => {
   }));
   app.use(helmet());
   app.use(cors({
-    origin: ["http://localhost:3001"],
+    origin: ["http://localhost:3001",/\.softwill\.be$/],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
   }));

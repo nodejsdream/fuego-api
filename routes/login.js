@@ -5,7 +5,7 @@ module.exports = app => {
   const Users = app.db.models.Users;
 
   /**
-   * @api {post} /token Authentication Token
+   * @api {post} /login Authentication Token
    * @apiGroup Credentials
    * @apiParam {String} email User email
    * @apiParam {String} password User password
@@ -21,7 +21,7 @@ module.exports = app => {
    * @apiErrorExample {json} Authentication error
    *    HTTP/1.1 401 Unauthorized
    */
-  app.post("/token", (req, res) => {
+  app.post("/login", (req, res) => {
     if (req.body.email && req.body.password) {
       const email = req.body.email;
       const password = req.body.password;

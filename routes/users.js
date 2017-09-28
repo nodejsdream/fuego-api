@@ -51,7 +51,7 @@ module.exports = app => {
     });
 
   /**
-   * @api {post} /users Register a new user
+   * @api {post} /users/create Register a new user
    * @apiGroup User
    * @apiParam {String} name User name
    * @apiParam {String} email User email
@@ -81,11 +81,59 @@ module.exports = app => {
    * @apiErrorExample {json} Register error
    *    HTTP/1.1 412 Precondition Failed
    */
-  app.post("/users", (req, res) => {
+  app.post("/users/create", (req, res) => {
     Users.create(req.body)
       .then(result => res.json(result))
       .catch(error => {
+        console.log(req);
         res.status(412).json({msg: error.message});
       });
   });
+
+  app.route("/users/find/:id")
+    .all(app.auth.authenticate())
+    /**
+     * @api {get} /users/:id Get a user by email or name or id
+     * @apiGroup Tasks
+     * @apiHeader {String} Authorization Token of authenticated user
+     * @apiHeaderExample {json} Header
+     *    {"Authorization": "JWT xyz.abc.123.hgf"}
+     * @apiParam {id} id User id/name/email
+     * @apiSuccess {Number} id User id
+     * @apiSuccess {String} name User name
+     * @apiSuccess {String} email User email
+     * @apiSuccessExample {json} Success
+     *    HTTP/1.1 200 OK
+     *    {
+     *      "id": 1,
+     *      "name": "Test User",
+     *      "email": "test@email.net",
+     *      "password": "$2a$10$SK1B1",
+     *      "updated_at": "2017-09-20T15:20:11.700Z",
+     *      "created_at": "2017-09-20T15:29:11.700Z"
+     *    }
+     * @apiErrorExample {json} User not found error
+     *    HTTP/1.1 404 Not Found
+     * @apiErrorExample {json} Find error
+     *    HTTP/1.1 412 Precondition Failed
+     */
+    .get((req, res) => {
+      Users.findAll({
+        where: {
+          $or: [{ email: req.params.id },{ id: req.params.id },  { name: req.params.id }]
+        },
+        attributes: ["id", "name", "email"]
+      }
+      )
+      .then(result => {
+        if (result) {
+          res.json(result);
+        } else {
+          res.sendStatus(404);
+        }
+      })
+      .catch(error => {
+        res.status(412).json({msg: error.message});
+      });
+    })
 };

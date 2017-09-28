@@ -1,6 +1,6 @@
-describe("Routes: Token", () => {
+describe("Routes: Login", () => {
   const Users = app.db.models.Users;
-  describe("POST /token", () => {
+  describe("POST /login", () => {
     beforeEach(done => {
       Users
         .destroy({where: {}})
@@ -13,7 +13,7 @@ describe("Routes: Token", () => {
     });
     describe("status 200", () => {
       it("returns authenticated user token", done => {
-        request.post("/token")
+        request.post("/login")
           .send({
             email: "john@mail.net",
             password: "12345"
@@ -27,7 +27,7 @@ describe("Routes: Token", () => {
     });
     describe("status 401", () => {
       it("throws error when password is incorrect", done => {
-        request.post("/token")
+        request.post("/login")
           .send({
             email: "john@mail.net",
             password: "WRONG_PASSWORD"
@@ -38,7 +38,7 @@ describe("Routes: Token", () => {
           });
       });
       it("throws error when email not exist", done => {
-        request.post("/token")
+        request.post("/login")
           .send({
             email: "wrong@email.com",
             password: "12345"
@@ -49,7 +49,7 @@ describe("Routes: Token", () => {
           });
       });
       it("throws error when email and password are blank", done => {
-        request.post("/token")
+        request.post("/login")
           .expect(401)
           .end((err, res) => {
             done(err);

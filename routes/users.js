@@ -10,7 +10,8 @@ module.exports = app => {
      * @apiHeaderExample {json} Header
      *    {"Authorization": "JWT xyz.abc.123.hgf"}
      * @apiSuccess {Number} id User id
-     * @apiSuccess {String} name User name
+     * @apiSuccess {String} first User first name
+     * @apiSuccess {String} last User last name
      * @apiSuccess {String} email User email
      * @apiSuccessExample {json} Success
      *    HTTP/1.1 200 OK
@@ -24,7 +25,7 @@ module.exports = app => {
      */
     .get((req, res) => {
       Users.findById(req.user.id, {
-        attributes: ["id", "name", "email"]
+        attributes: ["id", "first", "last", "email"]
       })
       .then(result => res.json(result))
       .catch(error => {
@@ -53,17 +54,20 @@ module.exports = app => {
   /**
    * @api {post} /users/create Register a new user
    * @apiGroup User
-   * @apiParam {String} name User name
+   * @apiParam {String} first User name
+   * @apiParam {String} last User name
    * @apiParam {String} email User email
    * @apiParam {String} password User password
    * @apiParamExample {json} Input
    *    {
-   *      "name": "Test User",
+   *      "first": "Test User 1",
+   *      "last": "Test User 2",
    *      "email": "test@email.net",
    *      "password": "123456"
    *    }
    * @apiSuccess {Number} id User id
-   * @apiSuccess {String} name User name
+   * @apiSuccess {String} first User first name
+   * @apiSuccess {String} last User last name
    * @apiSuccess {String} email User email
    * @apiSuccess {String} password User encrypted password
    * @apiSuccess {Date} updated_at Update's date
@@ -72,7 +76,8 @@ module.exports = app => {
    *    HTTP/1.1 200 OK
    *    {
    *      "id": 1,
-   *      "name": "Test User",
+   *      "first": "Test User 1",
+   *      "last": "Test User 2",
    *      "email": "test@email.net",
    *      "password": "$2a$10$SK1B1",
    *      "updated_at": "2017-09-20T15:20:11.700Z",
@@ -89,6 +94,44 @@ module.exports = app => {
         res.status(412).json({msg: error.message});
       });
   });
+
+  /**
+   * @api {get} /users/:id Find user profile
+   * @apiGroup User
+   * @apiParam {email} email User email
+   * @apiSuccess {String} msg Ok
+   * @apiSuccessExample {json} Success
+   *    HTTP/1.1 200 OK
+   *    {
+   *      "msg": "Ok"
+   *    }
+   * @apiErrorExample {json} User not found error
+   *    HTTP/1.1 404 Not Found
+   * @apiErrorExample {json} Find error
+   *    HTTP/1.1 412 Precondition Failed
+   */
+  app.get("/users/findProfile/:email",(req, res) => {
+    console.log(req.params);
+    Users.findAll({
+        where: {
+          $or: [{ email: req.params.email }]
+        },
+        attributes: ["id", "first", "email"]
+      }
+    )
+    .then(result => {
+      if (result) {
+        result.msg = "Ok";
+        //res.json({ "msg": "Ok"});
+        res.json(result);
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .catch(error => {
+      res.status(412).json({msg: error.message});
+    });
+  })
 
   app.route("/users/find/:id")
     .all(app.auth.authenticate())

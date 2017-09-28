@@ -94,7 +94,7 @@ module.exports = app => {
     .all(app.auth.authenticate())
     /**
      * @api {get} /users/:id Get a user by email or name or id
-     * @apiGroup Tasks
+     * @apiGroup User
      * @apiHeader {String} Authorization Token of authenticated user
      * @apiHeaderExample {json} Header
      *    {"Authorization": "JWT xyz.abc.123.hgf"}

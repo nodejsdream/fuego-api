@@ -121,7 +121,7 @@ module.exports = app => {
     )
     .then(result => {
       if (result) {
-        result.msg = "Ok";
+        //result.msg = "Ok";
         //res.json({ "msg": "Ok"});
         res.json(result);
       } else {
@@ -161,11 +161,12 @@ module.exports = app => {
      *    HTTP/1.1 412 Precondition Failed
      */
     .get((req, res) => {
+      //console.log("/users/find/", req.params);
       Users.findAll({
         where: {
-          $or: [{ email: req.params.id },{ id: req.params.id },  { name: req.params.id }]
+          $or: [{ email: req.params.id },{ id: req.params.id },  { last: req.params.id },  { first: req.params.id }]
         },
-        attributes: ["id", "name", "email"]
+        attributes: ["id", "first", "last",  "email"]
       }
       )
       .then(result => {
